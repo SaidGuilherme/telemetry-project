@@ -1,16 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Telemetry } from '../../domain/entities/telemetry.entity';
+import { MESSAGING_EVENT_BUS } from '../ports/messaging-event-bus.port';
+import type { MessagingEventBusPort } from '../ports/messaging-event-bus.port';
 
 @Injectable()
 export class PostTelemetryUseCase {
-  constructor() {}
+  constructor(
+    @Inject(MESSAGING_EVENT_BUS)
+    private readonly messagingEventBus: MessagingEventBusPort
+  ) {}
 
-  execute(telemetry: Telemetry): string {
-    return `Got it! id: ${telemetry.machine_id}
-    lat: ${telemetry.lat}
-    lng: ${telemetry.lng}
-    fuel: ${telemetry.fuel}
-    speed: ${telemetry.speed}
-    date: ${telemetry.timestamp}`;
+  async execute(telemetry: Telemetry): Promise<string> {
+    await this.messagingEventBus.publish('telemetry.raw', telemetry);
+    return 'Telemetry published successfully';
   }
 }

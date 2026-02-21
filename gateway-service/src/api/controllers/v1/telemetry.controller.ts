@@ -9,7 +9,7 @@ export class TelemetryController {
   ) {}
 
   @Post()
-  postTelemetry(@Body() telemetry: Telemetry): string {
-    return this.postTelemetryUseCase.execute(telemetry);
+  async postTelemetry(@Body() telemetry: Telemetry): Promise<string> {
+    return await this.postTelemetryUseCase.execute(telemetry);
   }
 }
