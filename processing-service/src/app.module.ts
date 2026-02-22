@@ -11,6 +11,8 @@ import { METADATA_REPO } from './application/ports/metadata.repository';
 import { HISTORY_REPO } from './application/ports/history.repository';
 import { CURRENT_STATUS_REPO } from './application/ports/current-status.repository';
 import { ConfigModule } from '@nestjs/config';
+import { RedisStreamAdapter } from './infra/adapters/redis-stream.adapter';
+import { REAL_TIME_STREAM } from './application/ports/real-time-stream.port';
 
 @Module({
   imports: [
@@ -35,6 +37,10 @@ import { ConfigModule } from '@nestjs/config';
     {
       provide: METADATA_REPO, 
       useClass: MongoDBMetadataAdapter
+    },
+    {
+      provide: REAL_TIME_STREAM, 
+      useClass: RedisStreamAdapter
     }
   ],
 })
