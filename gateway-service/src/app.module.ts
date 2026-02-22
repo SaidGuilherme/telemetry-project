@@ -13,7 +13,7 @@ import { MESSAGING_EVENT_BUS } from './application/ports/messaging-event-bus.por
         transport: Transport.KAFKA,
         options: {
           client: {
-            brokers: [process.env.KAFKA_BROKER || 'kafka:9092'],
+            brokers: ['kafka:9092'],
           },
           consumer: {
             groupId: 'gateway-consumer',

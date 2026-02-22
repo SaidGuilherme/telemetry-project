@@ -20,6 +20,17 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
     depends_on:
       - zookeeper
+  redis:
+    image: redis:7
+    container_name: redis
+  mongo:
+    image: mongo:6
+    container_name: mongo
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"
   gateway-service:
     build: 
       context: ./gateway-service
@@ -31,3 +42,13 @@ services:
       - "3000:3000"
     depends_on:
       - kafka
+  processing-service:
+    build: 
+      context: ./processing-service
+      dockerfile: Dockerfile
+    container_name: processing-service
+    depends_on:
+      - kafka
+      - redis
+      - mongo
+      - influxdb
