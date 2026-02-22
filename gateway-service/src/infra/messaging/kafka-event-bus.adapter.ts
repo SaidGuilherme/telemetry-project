@@ -9,7 +9,12 @@ export class KafkaEventBusAdapter implements MessagingEventBusPort, OnModuleInit
     ) {}
 
     async onModuleInit() {
-        await this.kafkaService.connect();
+        try{
+            await this.kafkaService.connect();
+            console.log('KafkaEventBusAdapter connected to Kafka');
+        } catch (error) {
+            console.error('Error connecting to Kafka:', error);
+        }
     }
 
     async publish(eventTopic: string, eventPayload: any): Promise<void> {

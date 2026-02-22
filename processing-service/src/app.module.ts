@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './api/app.controller';
-import { AppService } from './application/app.service';
+import { TelemetryController } from './api/telemetry.controller';
+import { ProcessTelemetryUseCase } from './application/process-telemetry.usecase';
+import { TelemetryConsumer } from './infra/telemetry.consumer';
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [TelemetryController],
+  providers: [
+    ProcessTelemetryUseCase,
+    TelemetryConsumer
+  ],
 })
 export class AppModule {}

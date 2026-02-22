@@ -4,6 +4,7 @@ import { PostTelemetryUseCase } from './application/use-cases/post-telemetry.use
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { KafkaEventBusAdapter } from './infra/messaging/kafka-event-bus.adapter';
 import { MESSAGING_EVENT_BUS } from './application/ports/messaging-event-bus.port';
+import { retry } from 'rxjs';
 
 @Module({
   imports: [
@@ -14,6 +15,10 @@ import { MESSAGING_EVENT_BUS } from './application/ports/messaging-event-bus.por
         options: {
           client: {
             brokers: ['kafka:9092'],
+            retry: {
+              retries: 5,
+              initialRetryTime: 500
+            }
           },
           consumer: {
             groupId: 'gateway-consumer',
