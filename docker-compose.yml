@@ -17,38 +17,65 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_NUM_PARTITIONS: 1
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
     depends_on:
       - zookeeper
+    healthcheck:
+      test: ["CMD", "bash", "-c", "nc -z localhost 9092"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
   redis:
     image: redis:7
     container_name: redis
   mongo:
     image: mongo:6
-    container_name: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
   influxdb:
     image: influxdb:2.7
     container_name: influxdb
     ports:
       - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=org
+      - DOCKER_INFLUXDB_INIT_BUCKET=telemetry
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=token
   gateway-service:
     build: 
       context: ./gateway-service
       dockerfile: Dockerfile
     container_name: gateway-service
+    env_file:
+      - .env
     environment:
       - KAFKA_BROKER=kafka:9092
     ports:
       - "3000:3000"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
   processing-service:
     build: 
       context: ./processing-service
       dockerfile: Dockerfile
     container_name: processing-service
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
     depends_on:
-      - kafka
-      - redis
-      - mongo
-      - influxdb
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      mongo:
+        condition: service_started
+      influxdb:
+        condition: service_started

@@ -3,7 +3,7 @@ import { ClientKafka } from '@nestjs/microservices';
 import { MessagingEventBusPort } from "src/application/ports/messaging-event-bus.port";
 
 @Injectable()
-export class KafkaEventBusAdapter implements MessagingEventBusPort, OnModuleInit {
+export class KafkaProducerAdapter implements MessagingEventBusPort, OnModuleInit {
     constructor(
         @Inject('KAFKA_SERVICE') private readonly kafkaService: ClientKafka
     ) {}
@@ -11,7 +11,7 @@ export class KafkaEventBusAdapter implements MessagingEventBusPort, OnModuleInit
     async onModuleInit() {
         try{
             await this.kafkaService.connect();
-            console.log('KafkaEventBusAdapter connected to Kafka');
+            console.log('KafkaProducerAdapter connected to Kafka');
         } catch (error) {
             console.error('Error connecting to Kafka:', error);
         }

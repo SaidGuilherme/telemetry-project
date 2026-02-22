@@ -4,7 +4,7 @@ export class Telemetry {
         public readonly lng: number,
         public readonly speed: number,
         public readonly fuel: number,
-        public readonly machine_id: number,
+        public readonly machine_id: string,
         public readonly timestamp: Date
     ) {}
 
@@ -13,7 +13,7 @@ export class Telemetry {
         lng: number,
         speed: number,
         fuel: number,
-        machine_id: number,
+        machine_id: string,
         timestamp: Date
     }) : Telemetry {
         return new Telemetry(

@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { TelemetryController } from './api/controllers/v1/telemetry.controller';
 import { PostTelemetryUseCase } from './application/use-cases/post-telemetry.usecase';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { KafkaEventBusAdapter } from './infra/messaging/kafka-event-bus.adapter';
+import { KafkaProducerAdapter } from './infra/messaging/kafka-producer.adapter';
 import { MESSAGING_EVENT_BUS } from './application/ports/messaging-event-bus.port';
-import { retry } from 'rxjs';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -26,13 +26,16 @@ import { retry } from 'rxjs';
         },
       },
     ]),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [TelemetryController],
   providers: [
     PostTelemetryUseCase, 
     {
       provide: MESSAGING_EVENT_BUS,
-      useClass: KafkaEventBusAdapter
+      useClass: KafkaProducerAdapter
     }
   ],
   exports: [PostTelemetryUseCase]
