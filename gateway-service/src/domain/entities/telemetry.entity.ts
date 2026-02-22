@@ -25,4 +25,22 @@ export class Telemetry {
             params.timestamp
         )
     }
+
+    static fromDto(dto: {
+        lat: number,
+        lng: number,
+        speed: number,
+        fuel: number,
+        machine_id: string,
+        timestamp: Date
+    }) : Telemetry {
+        return new Telemetry(
+            dto.lat,
+            dto.lng,
+            dto.speed,
+            dto.fuel,
+            dto.machine_id,
+            new Date(dto.timestamp)
+        )
+    }
 }
