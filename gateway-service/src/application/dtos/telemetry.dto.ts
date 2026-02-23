@@ -2,7 +2,7 @@ import {
     IsNumber,
     Min,
     Max,
-    IsDateString,
+    IsDate,
     IsString
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -37,6 +37,6 @@ export class TelemetryDto {
     machine_id: string;
 
     @Type(() => Date)
-    @IsDateString()
+    @IsDate()
     timestamp: Date;
 }
