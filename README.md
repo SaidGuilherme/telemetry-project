@@ -45,29 +45,29 @@ Projeto com dois microserviços em NestJS para ingestão e processamento de tele
   - [`METADATA_REPO`](processing-service/src/application/ports/metadata.repository.ts)  
   - [`REAL_TIME_STREAM`](processing-service/src/application/ports/real-time-stream.port.ts)
 
-## Instalação e uso via Docker (recomendado)
-1. Copie variáveis de ambiente:
-   - cp .env.example .env
-   - Ajuste se necessário: [`.env.example`](.env.example)
-2. Levantar toda a stack:
-   - docker-compose up -d
-3. Verificar logs/health:
-   - docker-compose ps
-   - docker-compose logs -f gateway-service
-4. Testes rápidos:
-   - Publicar telemetria (Gateway):  
-     curl -X POST http://localhost:3000/v1/telemetry -H "Content-Type: application/json" -d '{"lat":0,"lng":0,"speed":50,"fuel":70,"machine_id":"m1","timestamp":"2026-01-01T00:00:00Z"}'
-   - Status/processamento (Processing):  
-     curl http://localhost:4000/status/m1  
-     curl http://localhost:4000/history/m1
-
-Ports configuradas em [docker-compose.yml](docker-compose.yml): gateway 3000, processing 4000, Kafka 9092, Zookeeper 2181, Redis 6379, Mongo 27017, InfluxDB 8086.
-
 ## Dependências externas (onde baixar)
 - Node.js (runtime de desenvolvimento): https://nodejs.org/
 - Docker: https://docs.docker.com/get-docker/
 - Docker Compose: https://docs.docker.com/compose/install/
 - As outras dependências (Kafka, Zookeeper, Redis, MongoDB, InfluxDB) são fornecidas via imagens Docker listadas em [docker-compose.yml](docker-compose.yml).
+
+## Instalação e uso via Docker (recomendado)
+1. Baixe o repositório utilizando o comando 'git clone https://github.com/SaidGuilherme/telemetry-project.git' na pasta do projeto.
+2. Renomeie o arquivo '.env.example' para '.env'.
+3. Levantar toda a stack:
+   - Garanta que o Docker esteja rodando.
+   - Rode o seguinte comando na raiz do projeto: ``docker-compose up -d``
+4. Verificar logs/health:
+   - docker-compose ps
+   - docker-compose logs -f gateway-service
+5. Testes rápidos:
+   - Publicar telemetria (Gateway):  
+     curl -X POST http://localhost:3000/v1/telemetry -H "Content-Type: application/json" -d '{"lat":0,"lng":0,"speed":50,"fuel":90,"machine_id":"m1","timestamp":"2026-01-01T00:00:00Z"}'
+   - Status/processamento (Processing):  
+     curl http://localhost:4000/status/m1  
+     curl http://localhost:4000/history/m1
+
+Ports configuradas em [docker-compose.yml](docker-compose.yml): gateway 3000, processing 4000, Kafka 9092, Zookeeper 2181, Redis 6379, Mongo 27017, InfluxDB 8086.
 
 Observações:
 - Para executar localmente sem Docker: npm install && npm run start:dev em cada serviço (`gateway-service` e `processing-service`). Veja [gateway-service/package.json](gateway-service/package.json) e [processing-service/package.json](processing-service/package.json).
